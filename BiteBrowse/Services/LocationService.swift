@@ -28,19 +28,19 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     // Delegate method called when new locations are available
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
+        guard let location = locations.last else {
+            print("Failed to get a valid location")
+            return
+        }
         currentLocation = location.coordinate
+        //print("Updated location: \(location.coordinate.latitude), \(location.coordinate.longitude)")
     }
 
-    // Delegate method called when there is an error with location updates
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Failed to find user's location: \(error.localizedDescription)")
-    }
     
     // Handles changes in location permissions.
        func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
            if status == .denied || status == .restricted {
-               print("Location permission denied.")
+               print("Location has been permission denied.")
                permissionDenied = true // Update observable to reflect permission denial.
            } else {
                permissionDenied = false
@@ -50,19 +50,18 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
    
     // check and request location authorization based on status
-      func checkLocationAuthorization() {
-          switch locationManager.authorizationStatus {
-          case .notDetermined:
-              // Requesting permission when status is not determined
-              locationManager.requestWhenInUseAuthorization()
-          case .restricted, .denied:
-              // Updating observable to reflect permission denial
-              permissionDenied = true
-          case .authorizedAlways, .authorizedWhenInUse:
-              // Start location updates if authorized
-              locationManager.startUpdatingLocation()
-          default:
-              break
-          }
-      }
+    func checkLocationAuthorization() {
+        switch locationManager.authorizationStatus {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .restricted, .denied:
+            print("Location permission denied.")
+            permissionDenied = true
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.startUpdatingLocation()
+        default:
+            break
+        }
+    }
+
 }

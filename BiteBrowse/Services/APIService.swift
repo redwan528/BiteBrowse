@@ -13,16 +13,17 @@ class APIService {
     
     // Base URL for Yelp's business search API
     private let baseUrl =  "https://api.yelp.com/v3/businesses/search"
-    
 
-    func fetchRestaurants(latitude: Double, longitude: Double, radius: Int, completion: @escaping ([Restaurant]?) -> Void) {
-            var components = URLComponents(string: baseUrl)
-            components?.queryItems = [
-                URLQueryItem(name: "latitude", value: "\(latitude)"),
-                URLQueryItem(name: "longitude", value: "\(longitude)"),
-                URLQueryItem(name: "radius", value: "\(radius)"),
-                URLQueryItem(name: "categories", value: "restaurants")
-            ]
+    func fetchRestaurants(latitude: Double, longitude: Double, radius: Int, offset: Int, limit: Int = 0, completion: @escaping ([Restaurant]?) -> Void) {
+        var components = URLComponents(string: baseUrl)
+        components?.queryItems = [
+            URLQueryItem(name: "latitude", value: "\(latitude)"),
+            URLQueryItem(name: "longitude", value: "\(longitude)"),
+            URLQueryItem(name: "radius", value: "\(radius)"),
+            URLQueryItem(name: "offset", value: "\(offset)"),
+            URLQueryItem(name: "limit", value: "\(limit)"),
+            URLQueryItem(name: "categories", value: "restaurants")
+        ]
             
             guard let url = components?.url else {
                 DispatchQueue.main.async { completion(nil) }
@@ -48,8 +49,6 @@ class APIService {
                 }
             }.resume()
         }
-    
-    
     
     // Struct representing the JSON response structure from Yelp API
     struct YelpResponse: Decodable {
