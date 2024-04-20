@@ -7,18 +7,51 @@
 
 import SwiftUI
 
-struct RestaurantCardView: View {
+struct RestaurantCardsView: View {
+    @StateObject var viewModel = RestaurantsViewModel()
+    // ViewModel instance for the view
+    
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            ForEach(viewModel.restaurants) { restaurant in
+                RestaurantCard(restaurant: restaurant)
+                // creating a card for each restaurant
+            }
         }
-        .padding()
+        .onAppear {
+            viewModel.loadRestaurants(latitude: 38.7749, longitude: -122.4194) // Example coordinates
+            // Loading restaurants on view appearance
+        }
     }
 }
 
+// subview representing an individual restaurant card
+struct RestaurantCard: View {
+    var restaurant: Restaurant
+
+    var body: some View {
+        VStack {
+            AsyncImage(url: URL(string: restaurant.imageUrl)) { image in
+                image.resizable()
+            } placeholder: {
+                Color.gray
+            }
+            .frame(width: 300, height: 200)
+            .cornerRadius(10)
+
+            Text(restaurant.name)
+                .font(.headline)
+
+            Text("Rating: \(restaurant.rating)")
+                .font(.subheadline)
+        }
+        .padding()
+        .border(Color.gray, width: 1)
+    }
+}
+
+
 #Preview {
-    RestaurantCardView()
+    RestaurantCardsView()
 }

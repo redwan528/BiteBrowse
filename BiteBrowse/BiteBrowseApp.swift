@@ -11,7 +11,7 @@ import SwiftUI
 struct BiteBrowseApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RestaurantCardsView()
         }
     }
 }
