@@ -21,11 +21,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest //setting location accuracy
         self.locationManager.requestWhenInUseAuthorization() //requesting location permission
         self.locationManager.startUpdatingLocation() //start updating location
-       
         
-                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     }
-
+    
     // Delegate method called when new locations are available
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else {
@@ -33,22 +33,21 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             return
         }
         currentLocation = location.coordinate
-        //print("Updated location: \(location.coordinate.latitude), \(location.coordinate.longitude)")
     }
-
+    
     
     // Handles changes in location permissions.
-       func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-           if status == .denied || status == .restricted {
-               print("Location has been permission denied.")
-               permissionDenied = true // Update observable to reflect permission denial.
-           } else {
-               permissionDenied = false
-               locationManager.startUpdatingLocation() // restart location updates if permission is granted
-           }
-       }
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .denied || status == .restricted {
+            print("Location has been permission denied.")
+            permissionDenied = true // Update observable to reflect permission denial.
+        } else {
+            permissionDenied = false
+            locationManager.startUpdatingLocation() // restart location updates if permission is granted
+        }
+    }
     
-   
+    
     // check and request location authorization based on status
     func checkLocationAuthorization() {
         switch locationManager.authorizationStatus {
@@ -63,5 +62,5 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             break
         }
     }
-
+    
 }
